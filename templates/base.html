@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <!--  Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+
+</head>
+<body>
+
+    <!-- Toggle Button -->
+    <button
+        id="openSidebar"
+        class="m-4 px-4 py-2 text-white rounded"
+    >
+        <i data-lucide='menu' class="text-black"></i>
+    </button>
+
+    <div
+        id="overlay"
+        class="fixed inset-0 bg-black/50 hidden z-40"
+    ></div>
+
+    <aside
+        id="sidebar"
+        class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg
+            -translate-x-full transition-transform duration-300 z-50"
+    >
+        <div class="p-4 border-b flex justify-between items-center">
+            <h2 class="font-semibold">Menu</h2>
+            <button id="closeSidebar" class="text-black">
+                <i data-lucide="X"></i>
+            </button>
+        </div>
+
+
+
+        <nav class="p-4 space-y-2">
+            <a href="{% url "home_view" %}" class="block p-2 rounded hover:bg-gray-100">Dashboard</a>
+            <a href="{% url "create_product" %}" class="block p-2 rounded hover:bg-gray-100">Products</a>
+            <a href="{% url "create_shipment" %}" class="block p-2 rounded hover:bg-gray-100">Shipment</a>
+            <a href="{% url "create_orders" %}" class="block p-2 rounded hover:bg-gray-100">Orders</a>
+            <a href="{% url "create_manif" %}" class="block p-2 rounded hover:bg-gray-100">Manifactures</a>
+            <a href="{% url "logout_view" %}" class="block p-2 rounded text-white text-center bg-red-500 hover:bg-red-600">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="p-8 bg">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{% static 'js/main.js' %}"></script>
+
+</body>
+</html>

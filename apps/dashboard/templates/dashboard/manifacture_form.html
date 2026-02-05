@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Create Product
+{% endblock %}
+
+
+{% block content %}
+<div class="px-4">
+    <h1 class="mb-5 font-bold text-2xl">Create a Manifacture</h1>
+    
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        <div>
+            <label for="{{ form.manifacturer_name.id_for_label }}" class="block text-sm font-medium">
+                Manifacturer Name
+            </label>
+            {{ form.manifacturer_name }}
+            {% if form.manifacturer_name.errors %}
+                <p class="text-sm text-red-500">{{ form.manifacturer_name.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <button class="bg-blue-500 text-white px-5 py-2 w-full font-semibold rounded-sm hover:bg-blue-600">
+            Submit
+        </button>
+
+    </form>
+</div>
+{% endblock %}

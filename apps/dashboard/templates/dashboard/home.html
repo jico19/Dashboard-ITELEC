@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block content %}
+  <section class="p-6 min-h-screen">
+    <div class="max-w-7xl mx-auto space-y-6">
+
+      <!-- Top Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Monthly Sales -->
+        <div class="bg-white rounded-xl shadow">
+          <div class="px-5 py-3 border-b">
+            <h3 class="font-semibold text-gray-700">Monthly Sales</h3>
+          </div>
+          <div class="p-5">
+            <div id="chart2"></div>
+          </div>
+        </div>
+
+        <!-- Expenses -->
+        <div class="bg-white rounded-xl shadow">
+          <div class="px-5 py-3 border-b">
+            <h3 class="font-semibold text-gray-700">Expenses</h3>
+          </div>
+          <div class="p-5">
+            <div id="chart4"></div>
+          </div>
+        </div>
+
+        <!-- Profit -->
+        <div class="bg-white rounded-xl shadow">
+          <div class="px-5 py-3 border-b">
+            <h3 class="font-semibold text-gray-700">Profit</h3>
+          </div>
+          <div class="p-5">
+            <div id="chart5"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Charts -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Top Products -->
+        <div class="lg:col-span-8 bg-white rounded-xl shadow">
+          <div class="px-5 py-3 border-b">
+            <h3 class="font-semibold text-gray-700">Top Products</h3>
+          </div>
+          <div class="p-5">
+            <div id="chart1"></div>
+          </div>
+        </div>
+
+        <!-- Sales Distribution -->
+        <div class="lg:col-span-4 bg-white rounded-xl shadow">
+          <div class="px-5 py-3 border-b">
+            <h3 class="font-semibold text-gray-700">Sales Distribution</h3>
+          </div>
+          <div class="p-5">
+            <div id="chart3"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    const total_sales = {{ total_sales|safe }}
+    const total_sales_manifac = {{manufacturer_sales | safe}}
+    
+    // line graphs
+    const monthly_sales = {{ daily_sales|safe }}
+    const daily_expenses = {{ daily_expenses|safe }}
+    const daily_profit = {{ profit|safe }}
+
+    const chart1_labels = total_sales.map(item => item.product_name);
+    const chart1_values = total_sales.map(item => item.total_sales); 
+
+    const chart2_labels = monthly_sales.map(item => item.month)
+    const chart2_values = monthly_sales.map(item => item.sales)
+
+    const chart3_labels = total_sales_manifac.map(item => item.manufacturer__manifacturer_name)
+    const chart3_values = total_sales_manifac.map(item => item.total_sales)
+
+    // daily expenses 
+    const expenses_label = daily_expenses.map(item => item.month) 
+    const expenses_value = daily_expenses.map(item => item.expense)
+    
+    const profit_label = daily_profit.map(item => item.month)
+    const profit_value = daily_profit.map(item => item.profit)
+
+    const baseOptions = {
+        chart: {
+            toolbar: { show: false },
+            zoom: { enabled: false },
+            fontFamily: 'Inter, Arial, sans-serif'
+        },
+        dataLabels: {
+            enabled: false
+        },
+        grid: {
+            borderColor: '#e5e7eb',
+            strokeDashArray: 4
+        },
+        xaxis: {
+            labels: {
+            style: { fontSize: '12px' }
+            }
+        },
+        yaxis: {
+            labels: {
+            style: { fontSize: '12px' }
+            }
+        },
+        tooltip: {
+            theme: 'light'
+        }
+    };
+    
+    const total_sales_bar = new ApexCharts(
+        document.querySelector('#chart1'),
+        {
+            ...baseOptions,
+            chart: {
+            ...baseOptions.chart,
+            type: 'bar',
+            height: 350
+            },
+            series: [{
+            name: 'Total Sales',
+            data: chart1_values
+            }],
+            colors: ['#2563eb'],
+            plotOptions: {
+            bar: {
+                borderRadius: 6,
+                columnWidth: '55%'
+            }
+            },
+            xaxis: {
+            categories: chart1_labels
+            }
+        }
+    );
+    total_sales_bar.render();
+
+    const sales_line = new ApexCharts(
+        document.querySelector('#chart2'),
+        {
+            ...baseOptions,
+            chart: {
+            ...baseOptions.chart,
+            type: 'line',
+            height: 350
+            },
+            series: [{
+            name: 'Total Sales',
+            data: chart2_values
+            }],
+            colors: ['#16a34a'],
+            stroke: {
+            curve: 'smooth',
+            width: 3
+            },
+            markers: {
+            size: 4
+            },
+            xaxis: {
+            categories: chart2_labels
+            }
+        }
+    );
+    sales_line.render();
+
+    const expense_line = new ApexCharts(
+        document.querySelector('#chart4'),
+        {
+            ...baseOptions,
+            chart: {
+            ...baseOptions.chart,
+            type: 'line',
+            height: 350
+            },
+            series: [{
+            name: 'Expenses',
+            data: expenses_value
+            }],
+            colors: ['#dc2626'],
+            stroke: {
+            curve: 'smooth',
+            width: 3
+            },
+            markers: {
+            size: 4
+            },
+            xaxis: {
+            categories: expenses_label
+            }
+        }
+    );
+    expense_line.render();
+
+    const profit_line = new ApexCharts(
+        document.querySelector('#chart5'),
+        {
+            ...baseOptions,
+            chart: {
+                ...baseOptions.chart,
+                type: 'line',
+                height: 350
+            },
+            series: [{
+                name: 'Profit',
+                data: profit_value
+            }],
+            colors: ['#9333ea'],
+            stroke: {
+                curve: 'smooth',
+                width: 3
+            },
+            markers: {
+                size: 4
+            },
+            xaxis: {
+                categories: profit_label
+            }
+        }
+    );
+    profit_line.render();
+
+    const manufacturer_donut = new ApexCharts(
+        document.querySelector('#chart3'),
+        {
+            chart: {
+            type: 'donut',
+            height: 350
+            },
+            series: chart1_values,
+            labels: chart3_labels,
+            colors: ['#2563eb', '#16a34a', '#f59e0b', '#dc2626', '#9333ea'],
+            legend: {
+                position: 'bottom',
+                fontSize: '13px'
+            },
+            plotOptions: {
+            pie: {
+                donut: {
+                    size: '65%'
+                }
+            }
+            },
+            dataLabels: {
+                enabled: false  
+            }
+        }
+    );
+    manufacturer_donut.render();
+
+
+
+
+</script>
+{% endblock %}
